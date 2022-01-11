@@ -1,0 +1,44 @@
+#standardsql
+WITH
+
+###
+### Apply basic transformations to the Norway VMS positions.
+###
+raw_vms_positions_normalized AS (
+  SELECT
+    message_id as msgid,
+    `world-fishing-827.udfs_v20210701.normalize_shipname`(vessel_name) as shipname,
+    timestamp_utc as timestamp,
+    lat,
+    lon,
+    speed,
+    course,
+    concat(`world-fishing-827.udfs_v20210701.normalize_shipname`(vessel_name), '-', callsign) as ssvid,
+    IF(callsign != "", callsign, NULL) callsign,
+    CASE STARTS_WITH(UPPER(vessel_type),'FISKEFART')
+      WHEN TRUE THEN 'Fiskefartøy'
+      WHEN FALSE THEN vessel_type
+    END as shiptype,
+    CONCAT("norway_vms_", CASE STARTS_WITH(UPPER(vessel_type),'FISKEFART')
+      WHEN TRUE THEN 'fiskefartøy'
+      WHEN FALSE THEN LOWER(vessel_type)
+    END) as source,
+    "VMS" type
+  FROM
+  `{{ source }}`
+  WHERE
+  timestamp_utc >= Timestamp('{{ date }}')
+  AND timestamp_utc < TIMESTAMP_ADD(Timestamp('{{ date }}'), INTERVAL 1 DAY)
+  GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12
+)
+
+###
+### Final Query with messag IDs and the normalized values.
+### Filtrate the null ssvid.
+###
+select
+  *
+FROM
+  raw_vms_positions_normalized
+WHERE
+  ssvid IS NOT NULL
