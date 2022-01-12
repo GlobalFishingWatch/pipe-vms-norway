@@ -9,7 +9,7 @@
       "mode": "NULLABLE",
       "name": "shipname",
       "type": "STRING",
-      "description": "Normalized name of the vessel with udfs_v20210701.normalize_shipname."
+      "description": "The vessel name."
     },
     {
       "mode": "NULLABLE",
@@ -45,7 +45,7 @@
       "mode": "NULLABLE",
       "name": "ssvid",
       "type": "STRING",
-      "description": "We don't have an id in the norwayian data so we do normalized vessel name + callsign."
+      "description": "We don't have an id in the norwayian data so we do normalized vessel name + normalized callsign in case callsign is not null."
     },
     {
       "mode": "NULLABLE",
@@ -63,7 +63,7 @@
       "mode": "NULLABLE",
       "name": "source",
       "type": "STRING",
-      "description": "norway_vms + vessel type"
+      "description": "VMS_Norway"
     },
     {
       "mode": "NULLABLE",
