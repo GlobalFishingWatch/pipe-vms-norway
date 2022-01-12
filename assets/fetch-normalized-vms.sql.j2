@@ -7,22 +7,22 @@ WITH
 raw_vms_positions_normalized AS (
   SELECT
     message_id as msgid,
-    `world-fishing-827.udfs_v20210701.normalize_shipname`(vessel_name) as shipname,
+    vessel_name as shipname,
     timestamp_utc as timestamp,
     lat,
     lon,
     speed,
     course,
-    concat(`world-fishing-827.udfs_v20210701.normalize_shipname`(vessel_name), '-', callsign) as ssvid,
+    concat(`world-fishing-827.udfs_v20210701.normalize_shipname`(vessel_name), if(`world-fishing-827.udfs_v20210701.normalize_callsign`(callsign) = null, '', concat('-', `world-fishing-827.udfs_v20210701.normalize_callsign`(callsign)))) as ssvid,
     IF(callsign != "", callsign, NULL) callsign,
-    CASE STARTS_WITH(UPPER(vessel_type),'FISKEFART')
-      WHEN TRUE THEN 'Fiskefartøy'
-      WHEN FALSE THEN vessel_type
+    CASE UPPER(vessel_type)
+      WHEN 'FISKEFARTØY' THEN 'fishing'
+      WHEN 'FISKEFARTØY (AKTIV)' THEN 'fishing'
+      WHEN 'FORSKNINGSSKIP' THEN 'research'
+      WHEN 'TARETRÅLER' THEN 'kelp trawlers'
+      ELSE vessel_type
     END as shiptype,
-    CONCAT("norway_vms_", CASE STARTS_WITH(UPPER(vessel_type),'FISKEFART')
-      WHEN TRUE THEN 'fiskefartøy'
-      WHEN FALSE THEN LOWER(vessel_type)
-    END) as source,
+    "VMS_Norway" as source,
     "VMS" type
   FROM
   `{{ source }}`
