@@ -22,7 +22,7 @@ raw_vms_positions_normalized AS (
       WHEN 'TARETRÅLER' THEN 'kelp trawlers'
       ELSE vessel_type
     END as shiptype,
-    "VMS_Norway" as source,
+    "norway_vms" as source,
     "VMS" type
   FROM
   `{{ source }}`
