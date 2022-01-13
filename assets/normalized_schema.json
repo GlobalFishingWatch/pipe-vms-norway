@@ -21,13 +21,13 @@
       "mode": "NULLABLE",
       "name": "lat",
       "type": "FLOAT",
-      "description": "Latitude"
+      "description": "Latitude."
     },
     {
       "mode": "NULLABLE",
       "name": "lon",
       "type": "FLOAT",
-      "description": "Longitude"
+      "description": "Longitude."
     },
     {
       "mode": "NULLABLE",
@@ -45,7 +45,7 @@
       "mode": "NULLABLE",
       "name": "ssvid",
       "type": "STRING",
-      "description": "We don't have an id in the norwayian data so we do normalized vessel name + normalized callsign in case callsign is not null."
+      "description": "We don't have an id in the norwegian data so we do normalize vessel name and if callsign is not null concat the normalized callsign."
     },
     {
       "mode": "NULLABLE",
@@ -57,13 +57,13 @@
       "mode": "NULLABLE",
       "name": "shiptype",
       "type": "STRING",
-      "description": "Norway fleet"
+      "description": "The norway vessel type."
     },
     {
       "mode": "NULLABLE",
       "name": "source",
       "type": "STRING",
-      "description": "VMS_Norway"
+      "description": "norway_vms always."
     },
     {
       "mode": "NULLABLE",
