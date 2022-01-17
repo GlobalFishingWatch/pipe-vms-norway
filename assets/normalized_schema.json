@@ -1,0 +1,74 @@
+[
+    {
+      "mode": "NULLABLE",
+      "name": "msgid",
+      "type": "STRING",
+      "description": "A unique message id to be used to join with posterior pipeline output tables."
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "shipname",
+      "type": "STRING",
+      "description": "The vessel name."
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "timestamp",
+      "type": "TIMESTAMP",
+      "description": "Timestamp in UTC."
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "lat",
+      "type": "FLOAT",
+      "description": "Latitude."
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "lon",
+      "type": "FLOAT",
+      "description": "Longitude."
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "speed",
+      "type": "FLOAT",
+      "description": "SOG. Speed Over Ground in knots."
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "course",
+      "type": "FLOAT",
+      "description": "COG. Course over ground, on VMS records taken from the Heading field."
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "ssvid",
+      "type": "STRING",
+      "description": "We don't have an id in the norwegian data so we do normalize vessel name and if callsign is not null concat the normalized callsign."
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "callsign",
+      "type": "STRING",
+      "description": "Callsign."
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "shiptype",
+      "type": "STRING",
+      "description": "The norway vessel type."
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "source",
+      "type": "STRING",
+      "description": "norway_vms always."
+    },
+    {
+      "mode": "NULLABLE",
+      "name": "type",
+      "type": "STRING",
+      "description": "The type. VMS for all VMS records and the AIS.X for the AIS records."
+    }
+  ]
