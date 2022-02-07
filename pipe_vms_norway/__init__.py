@@ -2,7 +2,7 @@
 Pipeline for processing the Norway VMS data
 """
 
-__version__ = '3.0.0'
+__version__ = '3.1.0'
 __author__ = 'Matias Piano'
 __email__ = 'engineers@globalfishingwatch.org'
 __source__ = 'https://github.com/GlobalFishingWatch/pipe-vms-norway'
