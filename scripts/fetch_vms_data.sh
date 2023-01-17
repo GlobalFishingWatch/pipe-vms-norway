@@ -61,33 +61,32 @@ fetch_vms_data () {
 
 convert_zip_to_gzip () {
   ZIPFILE=$1
-  unzip ${ZIPFILE}/*.zip  -d ${TEMP}
-  rm -f ${TEMP}/*.zip
+  unzip ${ZIPFILE} -d ${TEMP}
+  mv ${TEMP}/${YEAR}-VMS.csv ${TEMP}/${CURRENTDATE}.${YEAR}-VMS.csv
+  rm -f ${ZIPFILE}
   gzip ${TEMP}/*
-  GZIPFILE=`ls -1 ${TEMP}`
-  echo "${TEMP}/${GZIPFILE}"
 }
 
 ################################################################################
 # Moves the data to GCS.
 ################################################################################
 move_to_gcs() {
-  SOURCE=$1
-  echo
   GCS_DESTINATION=${DEST}/${DT}/
+  echo
   echo "Moves the data to GCS. ${GCS_DESTINATION}" 
-  # Check that the folder exists in GCS before deleting it to prevent failures
-  gsutil -q stat "${GCS_DESTINATION}*"
-  if [ $? -eq 0 ]; then
-    return 1
-
-    # Do not clear yet the contents of the day's folder
-    # if ! gsutil -m rm -f "${GCS_DESTINATION}*" ; then
-    #   return 1
-    # fi
-  fi
   
-  gsutil -m cp ${SOURCE} ${GCS_DESTINATION}
+  # SKIP THIS. Do not clear yet the contents of the day's folder
+  # # Check that the folder exists in GCS before deleting it to prevent failures
+  # gsutil -q stat "${GCS_DESTINATION}*"
+  # if [ $? -eq 0 ]; then
+  #   return 1
+
+  #   # if ! gsutil -m rm -f "${GCS_DESTINATION}*" ; then
+  #   #   return 1
+  #   # fi
+  # fi
+  
+  gsutil -m cp ${TEMP}/* ${GCS_DESTINATION}
 }
 
 ################################################################################
@@ -112,9 +111,11 @@ echo "Downloads the NORWAY positions for year ${YEAR}."
 zipfile=`fetch_vms_data $YEAR || exit_code=$?`
 
 if [ $exit_code -eq 0 ]; then
-    gzipfile=`convert_zip_to_gzip $zipfile || exit_code=$?`
+  echo 
+  echo "Converts ${zipfile} to gzip for bq load."
+  convert_zip_to_gzip $zipfile || exit_code=$?
   if [ $exit_code -eq 0 ]; then
-      move_to_gcs $gzipfile || exit_code=$?
+      move_to_gcs || exit_code=$?
   fi
 fi
 
