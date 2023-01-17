@@ -9,6 +9,7 @@ source ${THIS_SCRIPT_DIR}/pipeline.sh
 # Norway base url where zip files will be placed: 
 #  Eg: https://register.fiskeridir.no/vms-ers/
 BASE_URL="https://register.fiskeridir.no/vms-ers"
+CURRENTDATE=`date +"%Y%m%d%H%M%S"`
 
 PROCESS=$(basename $0 .sh)
 ARGS=( DEST \
@@ -49,38 +50,44 @@ create_temp_folder () {
 # Downloads the NORWAY current year positions.
 ################################################################################
 fetch_vms_data () {
-  YEAR=${DT:0:4}
-  YEAR_BEFORE=`expr $YEAR - 1`
-  echo 
-  echo "Downloads the NORWAY positions for year ${YEAR}."
-  wget "${BASE_URL}/${YEAR}-VMS.csv.zip" -P ${TEMP}
+  YEAR=$1
+  OUTFILE="${TEMP}/${CURRENTDATE}.${YEAR}-VMS.csv.zip"
+  wget "${BASE_URL}/${YEAR}-VMS.csv.zip" -O ${OUTFILE}
   if [ ! $? -eq 0 ]; then
-    echo "Positions for year ${YEAR} not found yet"
-    echo "Downloads the NORWAY positions for the year before: ${YEAR_BEFORE}."
-    wget "${BASE_URL}/${YEAR_BEFORE}-VMS.csv.zip" -P ${TEMP}
-    if [ ! $? -eq 0 ] ; then
-      echo "Positions for year ${YEAR} neither found."
-      return 1
-    fi
+    return 1
   fi
+  echo ${OUTFILE}
+}
+
+convert_zip_to_gzip () {
+  ZIPFILE=$1
+  unzip ${ZIPFILE}/*.zip  -d ${TEMP}
+  rm -f ${TEMP}/*.zip
+  gzip ${TEMP}/*
+  GZIPFILE=`ls -1 ${TEMP}`
+  echo "${TEMP}/${GZIPFILE}"
 }
 
 ################################################################################
 # Moves the data to GCS.
 ################################################################################
 move_to_gcs() {
+  SOURCE=$1
   echo
-  echo "Moves the data to GCS."
   GCS_DESTINATION=${DEST}/${DT}/
+  echo "Moves the data to GCS. ${GCS_DESTINATION}" 
   # Check that the folder exists in GCS before deleting it to prevent failures
   gsutil -q stat "${GCS_DESTINATION}*"
   if [ $? -eq 0 ]; then
-    if ! gsutil -m rm -f "${GCS_DESTINATION}*" ; then
-      return 1
-    fi
+    return 1
+
+    # Do not clear yet the contents of the day's folder
+    # if ! gsutil -m rm -f "${GCS_DESTINATION}*" ; then
+    #   return 1
+    # fi
   fi
   
-  gsutil -m cp ${TEMP}/* ${GCS_DESTINATION}
+  gsutil -m cp ${SOURCE} ${GCS_DESTINATION}
 }
 
 ################################################################################
@@ -97,10 +104,18 @@ clean_temp_folder() {
 ################################################################################
 create_temp_folder || exit $?
 
+YEAR=${DT:0:4}
 exit_code=0
-fetch_vms_data || exit_code=$?
+
+echo 
+echo "Downloads the NORWAY positions for year ${YEAR}."
+zipfile=`fetch_vms_data $YEAR || exit_code=$?`
+
 if [ $exit_code -eq 0 ]; then
-    move_to_gcs || exit_code=$?
+    gzipfile=`convert_zip_to_gzip $zipfile || exit_code=$?`
+  if [ $exit_code -eq 0 ]; then
+      move_to_gcs $gzipfile || exit_code=$?
+  fi
 fi
 
 clean_temp_folder || exit_code=$?
