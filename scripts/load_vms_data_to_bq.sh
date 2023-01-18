@@ -9,6 +9,7 @@ source ${THIS_SCRIPT_DIR}/pipeline.sh
 PROCESS=$(basename $0 .sh)
 ARGS=( SOURCE \
   DEST \
+  TEMP_TABLE \
   DT )
 
 echo -e "\nRunning:\n${PROCESS}.sh $@ \n"
@@ -17,6 +18,7 @@ display_usage() {
   echo -e "\nUsage:\n${PROCESS}.sh ${ARGS[*]}\n"
   echo -e "SOURCE: The table id where is the source table (Format expected PROJECT:DATASET.TABLE).\n"
   echo -e "DEST: Table id where place the results (Format expected PROJECT:DATASET.TABLE).\n"
+  echo -e "TEMP_TABLE: Temp table id where place the results temporarily (Format expected DATASET.TABLE).\n"
   echo -e "DT: The date expressed with the following format YYYY-MM-DD.\n"
 }
 
@@ -38,7 +40,7 @@ done
 ################################################################################
 echo
 echo "Loads the VMS DATA"
-SCHEMA=${ASSETS}/normalized_schema.json
+SCHEMA=${ASSETS}/temp_raw_schema.json
 # Get the most recent gzip file in the folder
 response=(`gsutil ls -l ${SOURCE}/${DT}/* | sort -k 2 | tail -n 2 | head -1`)
 GCS_SOURCE=${response[2]}
@@ -46,9 +48,11 @@ bq load \
   --replace \
   --source_format=CSV \
   --time_partitioning_type=DAY \
-  --time_partitioning_field=timestamp  \
+  --time_partitioning_field=timestamp_utc  \
+  -F=";" \
+  --autodetect \
   --schema=${SCHEMA} \
-  ${DEST} \
+  ${TEMP_TABLE} \
   ${GCS_SOURCE}
 if [ "$?" -ne 0 ]; then
   echo "  Unable to load the VMS DATA
