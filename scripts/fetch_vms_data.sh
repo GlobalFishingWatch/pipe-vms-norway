@@ -8,7 +8,7 @@ source ${THIS_SCRIPT_DIR}/pipeline.sh
 
 # Norway base url where zip files will be placed: 
 #  Eg: https://register.fiskeridir.no/vms-ers/
-BASE_URL="https://register.fiskeridir.no/vms-ers"
+REPORTSINDEXURL="https://www.fiskeridir.no/Tall-og-analyse/AApne-data/posisjonsrapportering-vms"
 CURRENTDATE=`date +"%Y%m%d%H%M%S"`
 
 PROCESS=$(basename $0 .sh)
@@ -52,8 +52,23 @@ create_temp_folder () {
 fetch_vms_data () {
   YEAR=$1
   OUTFILE="${TEMP}/${CURRENTDATE}.${YEAR}-VMS.csv.zip"
-  wget "${BASE_URL}/${YEAR}-VMS.csv.zip" -O ${OUTFILE}
+  # Fetch the list of archives available to download
+  ZIPURL=`wget -q -O- ${REPORTSINDEXURL} | \
+    # Find all the links
+    grep -ioE "<a href=\"([^\"]+)\"[^>]*>[^<]+($YEAR)[^<]+" | \
+    # filter only those that contains .zip 
+    grep -E '.*\.zip"' | \
+    # extract omly the url
+    sed -r 's#<a href="([^"]+)"[^>]*+*>[^<]+([0-9]{4})[^<]+$#\1#' | \
+    # add the domain if the link does not have it
+    sed -r 's#(\/.*)#https://www.fiskeridir.no\1#'`
+  if [ -z "$ZIPURL" ]; then
+    echo "Could not find the positions report csv file to download for year ${YEAR} on ${REPORTSINDEXURL}."
+    return 1
+  fi
+  wget -q "${ZIPURL}" -O ${OUTFILE}
   if [ ! $? -eq 0 ]; then
+    echo "Error downloading yearly csv report ${ZIPURL}."
     return 1
   fi
   echo ${OUTFILE}
@@ -62,7 +77,17 @@ fetch_vms_data () {
 convert_zip_to_gzip () {
   ZIPFILE=$1
   unzip ${ZIPFILE} -d ${TEMP}
-  mv ${TEMP}/${YEAR}-VMS.csv ${TEMP}/${CURRENTDATE}.${YEAR}-VMS.csv
+  CSVFILE=`ls -1t ${TEMP}/*.csv | head -n 1`
+  if [ -z "$CSVFILE" ]; then
+    echo "Could not find a csv file inside the Zip file ${ZIPFILE}."
+    return 1
+  fi
+  NEWCSVFILE=`ls -1t ${TEMP}/*.csv | head -n 1 | sed -r "s#${TEMP}/(.*)#${TEMP}/${CURRENTDATE}.\1#"`
+  if [ -z "$NEWCSVFILE" ]; then
+    echo "Could not generate the new filename for the csv ${CSVFILE} with the timestamp prefix."
+    return 1
+  fi
+  mv ${CSVFILE} ${NEWCSVFILE}
   rm -f ${ZIPFILE}
   gzip ${TEMP}/*
 }
