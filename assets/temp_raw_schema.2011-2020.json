@@ -66,21 +66,44 @@
   },
   {
     "mode": "NULLABLE",
+    "name": "vessel_municipality",
+    "type": "STRING",
+    "description": "The vessel's home municipality retrieved from the mark register for fishing vessels. Appears only for active fishing vessels."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "vessel_country",
+    "type": "STRING",
+    "description": "The vessel's home county is taken from the mark register for fishing vessels. Appears only for active fishing vessels."
+  },
+  {
+    "mode": "NULLABLE",
     "name": "length",
     "type": "FLOAT64",
     "description": "The vessel's largest length in meters, measured from the leading edge of the front part of the hull to the stern edge of the aft part of the hull, cf. Regulations of 18 December 2009 no. 1694 on the measurement of ships § 2 letter l. For inactive fishing vessels at the time of notification, the last registered information is displayed. For vessel types other than fishing vessels entered manually when registering fishing tracking."
   },
   {
     "mode": "NULLABLE",
-    "name": "gross_tonnage",
-    "type": "INT64",
-    "description": "The vessel's gross tonnage."
-  },
-  {
-    "mode": "NULLABLE",
     "name": "power_engine",
     "type": "INT64",
     "description": "Engine power stated in horsepower (HP). For fishing vessels taken from the brand register. For inactive fishing vessels at the time of notification, the last registered information is displayed. For vessel types other than fishing vessels entered manually when registering fishing tracking."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "gross_tonnage_1969",
+    "type": "STRING",
+    "description": "For fishing vessels taken from the trade mark register, originally from a survey letter from the Norwegian Maritime Authority. For inactive fishing vessels at the time of notification, the last registered information is displayed. For vessel types other than fishing vessels entered manually when registering fishing tracking."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "gross_tonnage_other",
+    "type": "INT64",
+    "description": "The vessel's gross tonnage measured according to rules other than the London Convention 1969. For fishing vessels taken from the Register of Marks. For inactive fishing vessels at the time of notification, the last registered information is displayed. For vessel types other than fishing vessels entered manually when registering fishing tracking."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "vessel_type_code",
+    "type": "INT64"
   },
   {
     "mode": "NULLABLE",

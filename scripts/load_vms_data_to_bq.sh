@@ -34,13 +34,31 @@ for index in ${!ARGS[*]}; do
   declare "${ARGS[$index]}"="${ARG_VALUES[$index]}"
 done
 
+YEAR=${DT:0:4}
 
+SCHEMA=''
+if [[ $(($YEAR)) -ge 2022 ]]; then
+  SCHEMA="${ASSETS}/temp_raw_schema.json"
+fi
+if [[ $(($YEAR)) -eq 2021 ]]; then
+  SCHEMA="${ASSETS}/temp_raw_schema.2021.json"
+fi
+if [[ $(($YEAR)) -le 2020 ]]; then
+  SCHEMA="${ASSETS}/temp_raw_schema.2011-2020.json"
+fi
 ################################################################################
 # Loads the VMS DATA
 ################################################################################
 echo
 echo "Loads the VMS DATA"
+# By default use the latest temp raw schema valid since 2022
 SCHEMA=${ASSETS}/temp_raw_schema.json
+if [[ $(($YEAR)) -eq 2021 ]]; then
+  SCHEMA="${ASSETS}/temp_raw_schema.2021.json"
+fi
+if [[ $(($YEAR)) -le 2020 ]]; then
+  SCHEMA="${ASSETS}/temp_raw_schema.2011-2020.json"
+fi
 # Get the most recent gzip file in the folder
 response=(`gsutil ls -l ${SOURCE}/${DT}/* | sort -k 2 | tail -n 2 | head -1`)
 GCS_SOURCE=${response[2]}
