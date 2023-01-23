@@ -25,13 +25,13 @@
   {
     "mode": "NULLABLE",
     "name": "lat",
-    "type": "FLOAT64",
+    "type": "STRING",
     "description": "Geographic latitude in format 999.999 WGS-84"
   },
   {
     "mode": "NULLABLE",
     "name": "lon",
-    "type": "FLOAT64",
+    "type": "STRING",
     "description": "Geographic longitude in format 99.999 WGS-84"
   },
   {
@@ -43,7 +43,7 @@
   {
     "mode": "NULLABLE",
     "name": "speed",
-    "type": "FLOAT64",
+    "type": "STRING",
     "description": "The vessel's speed in tenths of a knot"
   },
   {
@@ -67,7 +67,7 @@
   {
     "mode": "NULLABLE",
     "name": "length",
-    "type": "FLOAT64",
+    "type": "STRING",
     "description": "The vessel's largest length in meters, measured from the leading edge of the front part of the hull to the stern edge of the aft part of the hull, cf. Regulations of 18 December 2009 no. 1694 on the measurement of ships § 2 letter l. For inactive fishing vessels at the time of notification, the last registered information is displayed. For vessel types other than fishing vessels entered manually when registering fishing tracking."
   },
   {

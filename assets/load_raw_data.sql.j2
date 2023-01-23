@@ -1,0 +1,39 @@
+#standardsql
+WITH
+
+###
+### Apply basic transformations to the temp Norway VMS positions.
+###
+raw_typed as (
+  SELECT
+    CAST(message_id as INT64) as message_id,
+    message_type_code,
+    message_type,
+    PARSE_TIMESTAMP('%d.%m.%Y %H.%M.%S', replace(timestamp_utc,',000000000', '')) as timestamp_utc,
+    CAST(replace(lat, ',', '.') as FLOAT64) as lat,
+    CAST(replace(lon, ',', '.') as FLOAT64) as lon,
+    CAST(course as INT64) as course,
+    CAST(replace(speed, ',', '.') as FLOAT64) as speed,
+    callsign,
+    registration_mark,
+    vessel_name,
+    CAST(replace(length, ',', '.') as DECIMAL) as length,
+    CAST(gross_tonnage as INT64) as gross_tonnage,
+    CAST(power_engine as INT64) as power_engine,
+    vessel_type as vessel_type,
+  FROM
+    `{{ source }}`
+)
+
+###
+### Final Query with message IDs and the normalized values.
+### Filtrate the null ssvid.
+###
+select
+  *
+FROM
+  raw_typed
+WHERE
+    timestamp_utc >= Timestamp('{{ date }}')
+    AND timestamp_utc < TIMESTAMP_ADD(Timestamp('{{ date }}'), INTERVAL 1 DAY)
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
