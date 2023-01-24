@@ -1,0 +1,71 @@
+#standardsql
+WITH
+
+###
+### Apply basic transformations to the temp Norway VMS positions.
+###
+raw_typed_norwegian as (
+  SELECT
+    CAST(message_id as INT64) as message_id,
+    message_type_code,
+    message_type,
+    PARSE_TIMESTAMP('%d.%m.%Y %H:%M:%S', replace(replace(timestamp_utc,',000000000', ''), '  ', ' ')) as timestamp_utc,
+    CAST(lat as FLOAT64) as lat,
+    CAST(lon as FLOAT64) as lon,
+    CAST(course as INT64) as course,
+    CAST(speed as FLOAT64) as speed,
+    callsign,
+    registration_mark,
+    vessel_name,
+    CAST(length as DECIMAL) as length,
+    CAST(COALESCE(CAST(gross_tonnage_1969 as INT64), CAST(gross_tonnage_other AS INT64)) as INT64) as gross_tonnage,
+    CAST(power_engine as INT64) as power_engine,
+    vessel_type as vessel_type,
+  FROM
+    `{{ source }}`
+  WHERE
+      SUBSTRING(timestamp_utc, 7, 4) = SUBSTRING('{{ date }}', 1, 4)
+),
+raw_typed_iso as (
+  # in case the timestamp is in ISO format
+  SELECT
+    CAST(message_id as INT64) as message_id,
+    message_type_code,
+    message_type,
+    PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S', replace(replace(timestamp_utc,',000000000', ''), '  ', ' ')) as timestamp_utc,
+    CAST(lat as FLOAT64) as lat,
+    CAST(lon as FLOAT64) as lon,
+    CAST(course as INT64) as course,
+    CAST(speed as FLOAT64) as speed,
+    callsign,
+    registration_mark,
+    vessel_name,
+    CAST(length as DECIMAL) as length,
+    CAST(COALESCE(CAST(gross_tonnage_1969 as INT64), CAST(gross_tonnage_other AS INT64)) as INT64) as gross_tonnage,
+    CAST(power_engine as INT64) as power_engine,
+    vessel_type as vessel_type,
+  FROM
+    `{{ source }}`
+  WHERE
+      SUBSTRING(timestamp_utc, 1, 4) = SUBSTRING('{{ date }}', 1, 4)
+),
+raw_typed as (
+  SELECT * 
+  FROM raw_typed_norwegian
+  UNION ALL 
+  SELECT * 
+  FROM raw_typed_iso
+)
+
+###
+### Final Query with message IDs and the normalized values.
+### Filtrate the null ssvid.
+###
+select
+  *
+FROM
+  raw_typed
+WHERE
+    timestamp_utc >= Timestamp('{{ date }}')
+    AND timestamp_utc < TIMESTAMP_ADD(Timestamp('{{ date }}'), INTERVAL 1 DAY)
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
