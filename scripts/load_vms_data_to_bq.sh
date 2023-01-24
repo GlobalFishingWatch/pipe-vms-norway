@@ -88,7 +88,6 @@ fi
 if [[ $(($YEAR)) -le 2020 ]]; then
   SQL=${ASSETS}/load_raw_data.2011-2020.sql.j2
 fi
-PARTITION=`echo "${DATE}" | sed -r 's#-##g'`
 
 jinja2 ${SQL} \
   -D source=${TEMP_TABLE} \
@@ -97,8 +96,13 @@ jinja2 ${SQL} \
     --replace \
     --nouse_legacy_sql \
     --destination_schema ${ASSETS}/raw_schema.json \
-    --destination_table ${DEST} \
+    --destination_table ${DEST}
 
+if [ "$?" -ne 0 ]; then
+  echo "  Unable to load the VMS DATA into the raw table ${DEST}"
+  display_usage
+  exit 1
+fi
 
 #############################################################
 # Updates the table description.
