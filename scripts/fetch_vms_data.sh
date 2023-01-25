@@ -116,7 +116,7 @@ convert_zip_to_gzip () {
   fi
   mv ${CSVFILE} ${NEWCSVFILE}
   rm -f ${ZIPFILE}
-  gzip ${TEMP}/*
+  gzip -9 ${TEMP}/*
 }
 
 ################################################################################
