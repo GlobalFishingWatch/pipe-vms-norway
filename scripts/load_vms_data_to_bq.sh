@@ -7,7 +7,8 @@ ASSETS=${THIS_SCRIPT_DIR}/../assets
 source ${THIS_SCRIPT_DIR}/pipeline.sh
 
 PROCESS=$(basename $0 .sh)
-ARGS=( DT \
+ARGS=( START_DT \
+  END_DT \
   SOURCE \
   DEST \
   TEMP_TABLE )
@@ -16,7 +17,8 @@ echo -e "\nRunning:\n${PROCESS}.sh $@ \n"
 
 display_usage() {
   echo -e "\nUsage:\n${PROCESS}.sh ${ARGS[*]}\n"
-  echo -e "DT: The date expressed with the following format YYYY-MM-DD.\n"
+  echo -e "START_DT: The start date expressed with the following format YYYY-MM-DD.\n"
+  echo -e "END_DT: The end date expressed with the following format YYYY-MM-DD.\n"
   echo -e "SOURCE: The GCP bucket where csv source files are located (Format expected gs://the-gcp-bucket/some-folder ).\n"
   echo -e "DEST: Table id where place the results (Format expected PROJECT:DATASET.TABLE).\n"
   echo -e "TEMP_TABLE: Temp table id where place the results temporarily (Format expected DATASET.TABLE).\n"
@@ -34,7 +36,7 @@ for index in ${!ARGS[*]}; do
   declare "${ARGS[$index]}"="${ARG_VALUES[$index]}"
 done
 
-YEAR=${DT:0:4}
+YEAR=${START_DT:0:4}
 
 ################################################################################
 # Loads the VMS DATA into a temp table
@@ -45,12 +47,11 @@ echo "Loads the VMS DATA into a temp table"
 SCHEMA=${ASSETS}/temp_raw_schema.json
 if [[ $(($YEAR)) -eq 2021 ]]; then
   SCHEMA="${ASSETS}/temp_raw_schema.2021.json"
-fi
-if [[ $(($YEAR)) -le 2020 ]]; then
+elif [[ $(($YEAR)) -le 2020 ]]; then
   SCHEMA="${ASSETS}/temp_raw_schema.2011-2020.json"
 fi
-# Get the most recent gzip file in the folder
-response=(`gsutil ls -l ${SOURCE}/${DT}/* | sort -k 2 | tail -n 2 | head -1`)
+# Get the most recent gzip file in the DATE folder
+response=(`gsutil ls -l ${SOURCE}/${START_DT}/* | sort -k 2 | tail -n 2 | head -1`)
 GCS_SOURCE=${response[2]}
 
 if [ "$?" -ne 0 ]; then
@@ -59,7 +60,6 @@ if [ "$?" -ne 0 ]; then
 fi
 
 echo "CSV File ${GCS_SOURCE}"
-
 bq load \
   --replace \
   --source_format=CSV \
@@ -76,6 +76,19 @@ fi
 
 
 ################################################################################
+# Removes the partitions on VMS raw table before inserting the new positions
+################################################################################
+echo
+echo "Removing data on ${DEST} from ${START_DT} to ${END_DT}"
+jinja2 ${ASSETS}/delete_raw_data.sql.j2 \
+  -D dest=${DEST} \
+  -D start_date=${START_DT} \
+  -D end_date=${END_DT} \
+  | bq query -q \
+    --nouse_legacy_sql
+
+
+################################################################################
 # Loads the VMS DATA into the raw table
 ################################################################################
 # By default use the latest temp raw schema valid since 2022
@@ -84,16 +97,16 @@ echo "Loads the VMS DATA into the RAW table"
 SQL=${ASSETS}/load_raw_data.sql.j2
 if [[ $(($YEAR)) -eq 2021 ]]; then
   SQL=${ASSETS}/load_raw_data.2021.sql.j2
-fi
-if [[ $(($YEAR)) -le 2020 ]]; then
+elif [[ $(($YEAR)) -le 2020 ]]; then
   SQL=${ASSETS}/load_raw_data.2011-2020.sql.j2
 fi
 
 jinja2 ${SQL} \
   -D source=${TEMP_TABLE} \
-  -D date=${DT} \
+  -D start_date=${START_DT} \
+  -D end_date=${END_DT} \
   | bq query -q --max_rows=0 --allow_large_results \
-    --replace \
+    --append_table \
     --nouse_legacy_sql \
     --destination_schema ${ASSETS}/raw_schema.json \
     --destination_table ${DEST}

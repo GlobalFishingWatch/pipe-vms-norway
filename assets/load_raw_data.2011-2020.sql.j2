@@ -24,7 +24,7 @@ raw_typed_norwegian as (
   FROM
     `{{ source }}`
   WHERE
-      SUBSTRING(timestamp_utc, 7, 4) = SUBSTRING('{{ date }}', 1, 4)
+      SUBSTRING(timestamp_utc, 7, 4) = SUBSTRING('{{ start_date }}', 1, 4)
 ),
 raw_typed_iso as (
   # in case the timestamp is in ISO format
@@ -47,7 +47,7 @@ raw_typed_iso as (
   FROM
     `{{ source }}`
   WHERE
-      SUBSTRING(timestamp_utc, 1, 4) = SUBSTRING('{{ date }}', 1, 4)
+      SUBSTRING(timestamp_utc, 1, 4) = SUBSTRING('{{ start_date }}', 1, 4)
 ),
 raw_typed as (
   SELECT * 
@@ -66,6 +66,6 @@ select
 FROM
   raw_typed
 WHERE
-    timestamp_utc >= Timestamp('{{ date }}')
-    AND timestamp_utc < TIMESTAMP_ADD(Timestamp('{{ date }}'), INTERVAL 1 DAY)
+    timestamp_utc >= Timestamp('{{ start_date }}')
+    AND timestamp_utc < Timestamp('{{ end_date }}')
 GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
