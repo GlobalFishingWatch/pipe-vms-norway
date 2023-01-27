@@ -124,6 +124,7 @@ fi
 #############################################################
 # Updates the table description.
 #############################################################
+echo 
 echo "Updating table description ${DEST}"
 TABLE_DESC=(
   "* Pipeline: ${PIPELINE} ${PIPELINE_VERSION}"
@@ -142,5 +143,18 @@ if [ "$?" -ne 0 ]; then
   display_usage
   exit 1
 fi
+
+#############################################################
+# Deletes the temp table description.
+#############################################################
+echo 
+echo "Deleting temp table ${TEMP_TABLE}"
+bq rm -f ${TEMP_TABLE}
+if [ "$?" -ne 0 ]; then
+  echo "  Unable to delete temp table ${TEMP_TABLE}"
+  display_usage
+  exit 1
+fi
+
 
 echo "${DEST} Done."
