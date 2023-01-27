@@ -50,8 +50,8 @@ if [[ $(($YEAR)) -eq 2021 ]]; then
 elif [[ $(($YEAR)) -le 2020 ]]; then
   SCHEMA="${ASSETS}/temp_raw_schema.2011-2020.json"
 fi
-# Get the most recent gzip file in the DATE folder
-response=(`gsutil ls -l ${SOURCE}/${START_DT}/* | sort -k 2 | tail -n 2 | head -1`)
+# Get the most recent gzip file for the YEAR
+response=(`gsutil ls -l ${SOURCE}/${YEAR}* | sort -k 2 | tail -n 2 | head -1`)
 GCS_SOURCE=${response[2]}
 
 if [ "$?" -ne 0 ]; then
