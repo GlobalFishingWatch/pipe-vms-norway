@@ -1,7 +1,7 @@
 #standardsql
 DELETE
 FROM
-  {{ dest }}
+  `{{ dest }}`
 WHERE
     timestamp_utc >= Timestamp('{{ start_date }}')
     AND timestamp_utc < Timestamp('{{ end_date }}')
