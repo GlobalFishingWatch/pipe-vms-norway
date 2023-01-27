@@ -20,6 +20,10 @@ case $1 in
     xdaterange ${THIS_SCRIPT_DIR}/fetch_normalized_vms.sh "${@:2}"
     ;;
 
+  fetch_vms_data)
+    ${THIS_SCRIPT_DIR}/fetch_vms_data.sh "${@:2}"
+    ;;
+
   *)
     display_usage
     exit 1
