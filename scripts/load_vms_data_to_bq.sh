@@ -100,6 +100,10 @@ if [[ $(($YEAR)) -eq 2021 ]]; then
 elif [[ $(($YEAR)) -le 2020 ]]; then
   SQL=${ASSETS}/load_raw_data.2011-2020.sql.j2
 fi
+SCHEMA=${ASSETS}/raw_schema.json
+if [[ $(($YEAR)) -le 2020 ]]; then
+  SCHEMA=${ASSETS}/raw_schema.2011-2020.json
+fi
 
 jinja2 ${SQL} \
   -D source=${TEMP_TABLE} \
@@ -108,7 +112,7 @@ jinja2 ${SQL} \
   | bq query -q --max_rows=0 --allow_large_results \
     --append_table \
     --nouse_legacy_sql \
-    --destination_schema ${ASSETS}/raw_schema.json \
+    --destination_schema ${SCHEMA} \
     --destination_table ${DEST}
 
 if [ "$?" -ne 0 ]; then

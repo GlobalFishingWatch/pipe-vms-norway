@@ -26,14 +26,12 @@ raw_typed as (
 )
 
 ###
-### Final Query with message IDs and the normalized values.
-### Filtrate the null ssvid.
+### Final query with messages in the provided date range
 ###
-select
+SELECT
   *
 FROM
   raw_typed
 WHERE
     timestamp_utc >= Timestamp('{{ start_date }}')
     AND timestamp_utc < Timestamp('{{ end_date }}')
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
