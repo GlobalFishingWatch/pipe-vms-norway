@@ -172,34 +172,49 @@ while [[ "$YEAR" -le "$END_YEAR" && $exit_code -eq 0 ]]; do
   echo "Fetching data for year: $YEAR"
   create_temp_folder || exit $?
 
-  echo 
+  set +e; 
+  echo ;
   echo "Gets the NORWAY positions for year ${YEAR}."
-  fileurl=`get_file_url $YEAR || exit_code=$?`
+  fileurl=`get_file_url "$YEAR"`; 
+  exit_code=$(($exit_code + $? )); 
+  set -e
 
   # To Improve: ONLY FETCH IF THE FILE on their server CHANGED compare to ours
   # or if we dont have it
   if [ $exit_code -eq 0 ]; then
-    echo 
-    echo "Downloads the NORWAY positions for year ${YEAR}."
-    echo "$fileurl"
-    zipfile=`fetch_vms_data ${fileurl} ${YEAR} || exit_code=$?`
+    set +e;
+    echo ;
+    echo "Downloads the NORWAY positions for year ${YEAR}.";
+    echo "$fileurl";
+    zipfile=`fetch_vms_data ${fileurl} ${YEAR}`;
+    exit_code=$(($exit_code + $? ));
+    set -e
   fi
   if [ $exit_code -eq 0 ]; then
-    echo 
+    set +e;
+    echo ;
     echo "Converts ${zipfile} to gzip for bq load."
-    convert_zip_to_gzip $zipfile || exit_code=$?
+    convert_zip_to_gzip $zipfile;
+    exit_code=$(($exit_code + $? ));
+    set -e
   fi
   if [ $exit_code -eq 0 ]; then
-      GCS_DAY_FOLDER=$YEAR
-      if [[ "$YEAR" -eq "$END_YEAR" ]]; then
-          GCS_DAY_FOLDER=$END_DT
-      fi
-      move_to_gcs $GCS_DAY_FOLDER || exit_code=$?
+    [[  "$YEAR" == "$END_YEAR" ]] && 
+        GCS_DAY_FOLDER=$END_DT ||
+        GCS_DAY_FOLDER=$YEAR
+    set +e;
+    move_to_gcs $GCS_DAY_FOLDER;
+    exit_code=$(($exit_code + $? ));
+    set -e
   fi
 
   # Always clean temp folder
-  clean_temp_folder || exit_code=$?
-
+  set +e;
+  clean_temp_folder;
+  exit_code=$(($exit_code + $? ));
+  set -e
+  echo "============================================"
+  echo 
   YEAR=$(($YEAR + 1 ))
 done
 exit $exit_code
