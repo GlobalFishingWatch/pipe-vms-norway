@@ -13,14 +13,16 @@ CURRENTDATE=`date +"%Y%m%d%H%M%S"`
 
 PROCESS=$(basename $0 .sh)
 ARGS=( DEST \
-  DT )
+  START_DT \
+  END_DT)
 
 echo -e "\nRunning:\n${PROCESS}.sh $@ \n"
 
 display_usage() {
   echo -e "\nUsage:\n${PROCESS}.sh ${ARGS[*]}\n"
   echo -e "DEST: GCS destination path where the file will uploaded.\n"
-  echo -e "DT: The date expressed with the following format YYYY-MM-DD.\n"
+  echo -e "START_DT: The start date expressed with the following format YYYY-MM-DD.\n"
+  echo -e "END_DT: The end date expressed with the following format YYYY-MM-DD.\n"
 }
 
 if [[ $# -ne ${#ARGS[@]} ]]
@@ -47,11 +49,10 @@ create_temp_folder () {
 }
 
 ################################################################################
-# Downloads the NORWAY current year positions.
+# Gets the zip file url for the given YEAR
 ################################################################################
-fetch_vms_data () {
+get_file_url () {
   YEAR=$1
-  OUTFILE="${TEMP}/${CURRENTDATE}.${YEAR}-VMS.csv.zip"
   # Fetch the list of archives available to download
   ZIPURL=`wget -q -O- ${REPORTSINDEXURL} | \
     # Find all the links
@@ -61,7 +62,7 @@ fetch_vms_data () {
     # extract omly the url
     sed -r 's#<a href="([^"]+)"[^>]*+*>[^<]+([0-9]{4})[^<]+$#\1#' | \
     # add the domain if the link does not have it
-    sed -r 's#(\/.*)#https://www.fiskeridir.no\1#'`
+    sed -r 's#(^\/.*)#https://www.fiskeridir.no\1#'`
   
   if [ -z "$ZIPURL" ]; then
     # When the file to download is not found in ther downloads page
@@ -93,6 +94,15 @@ fetch_vms_data () {
     echo "Could not find the positions report csv file to download for year ${YEAR} on ${REPORTSINDEXURL}."
     return 1
   fi
+  echo $ZIPURL
+}
+################################################################################
+# Downloads the NORWAY current year positions.
+################################################################################
+fetch_vms_data () {
+  ZIPURL=$1
+  YEAR=$2
+  OUTFILE="${TEMP}/${CURRENTDATE}.${YEAR}-VMS.csv.zip"
   wget -q "${ZIPURL}" -O ${OUTFILE}
   if [ ! $? -eq 0 ]; then
     echo "Error downloading yearly csv report ${ZIPURL}."
@@ -123,7 +133,7 @@ convert_zip_to_gzip () {
 # Moves the data to GCS.
 ################################################################################
 move_to_gcs() {
-  GCS_DESTINATION=${DEST}/${DT}/
+  GCS_DESTINATION=${DEST}/$1/
   echo
   echo "Moves the data to GCS. ${GCS_DESTINATION}" 
   
@@ -153,24 +163,58 @@ clean_temp_folder() {
 ################################################################################
 # Main execution flow
 ################################################################################
-create_temp_folder || exit $?
+START_YEAR=${START_DT:0:4}
+END_YEAR=${END_DT:0:4}
 
-YEAR=${DT:0:4}
 exit_code=0
+YEAR=$(($START_YEAR))
+while [[ "$YEAR" -le "$END_YEAR" && $exit_code -eq 0 ]]; do 
+  echo "Fetching data for year: $YEAR"
+  create_temp_folder || exit $?
 
-echo 
-echo "Downloads the NORWAY positions for year ${YEAR}."
-zipfile=`fetch_vms_data $YEAR || exit_code=$?`
+  set +e; 
+  echo ;
+  echo "Gets the NORWAY positions for year ${YEAR}."
+  fileurl=`get_file_url "$YEAR"`; 
+  exit_code=$(($exit_code + $? )); 
+  set -e
 
-if [ $exit_code -eq 0 ]; then
-  echo 
-  echo "Converts ${zipfile} to gzip for bq load."
-  convert_zip_to_gzip $zipfile || exit_code=$?
+  # To Improve: ONLY FETCH IF THE FILE on their server CHANGED compare to ours
+  # or if we dont have it
   if [ $exit_code -eq 0 ]; then
-      move_to_gcs || exit_code=$?
+    set +e;
+    echo ;
+    echo "Downloads the NORWAY positions for year ${YEAR}.";
+    echo "$fileurl";
+    zipfile=`fetch_vms_data ${fileurl} ${YEAR}`;
+    exit_code=$(($exit_code + $? ));
+    set -e
   fi
-fi
+  if [ $exit_code -eq 0 ]; then
+    set +e;
+    echo ;
+    echo "Converts ${zipfile} to gzip for bq load."
+    convert_zip_to_gzip $zipfile;
+    exit_code=$(($exit_code + $? ));
+    set -e
+  fi
+  if [ $exit_code -eq 0 ]; then
+    [[  "$YEAR" == "$END_YEAR" ]] && 
+        GCS_DAY_FOLDER=$END_DT ||
+        GCS_DAY_FOLDER=$YEAR
+    set +e;
+    move_to_gcs $GCS_DAY_FOLDER;
+    exit_code=$(($exit_code + $? ));
+    set -e
+  fi
 
-clean_temp_folder || exit_code=$?
-
+  # Always clean temp folder
+  set +e;
+  clean_temp_folder;
+  exit_code=$(($exit_code + $? ));
+  set -e
+  echo "============================================"
+  echo 
+  YEAR=$(($YEAR + 1 ))
+done
 exit $exit_code
