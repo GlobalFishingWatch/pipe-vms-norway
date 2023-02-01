@@ -1,0 +1,114 @@
+[
+  {
+    "mode": "NULLABLE",
+    "name": "message_id",
+    "type": "INT64",
+    "description": "Each message is affixed with a unique number upon receipt by the Directorate of Fisheries."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "message_type_code",
+    "type": "STRING",
+    "description": "Here only POS = Standard position message . Other message types have been removed."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "message_type",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "timestamp_utc",
+    "type": "STRING",
+    "description": "Date and time in UTC of a message generated on board a vessel."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "lat",
+    "type": "FLOAT64",
+    "description": "Geographic latitude in format 999.999 WGS-84"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "lon",
+    "type": "FLOAT64",
+    "description": "Geographic longitude in format 99.999 WGS-84"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "course",
+    "type": "INT64",
+    "description": "The vessel's course in degrees 000-360"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "speed",
+    "type": "FLOAT64",
+    "description": "The vessel's speed in tenths of a knot"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "callsign",
+    "type": "STRING",
+    "description": "The vessel's identification signal assigned by the Norwegian Maritime Directorate (Ship registers)"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "registration_mark",
+    "type": "STRING",
+    "description": "Registration mark consists of a maximum of 8 characters; 1-2 indicates the county letter (s), 3-6 a serial number, 7-8 indicates the municipality letter (s). A registration mark can be reused after a waiting period of two years. See the Business Permit Regulations §§ 13 and 22. Appears only for active fishing vessels."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "vessel_name",
+    "type": "STRING",
+    "description": "The name of the vessel taken from the mark register for active fishing vessels. For inactive fishing vessels, at the time of notification, the last registered name is displayed. For other vessel types entered manually when registering fishery tracking."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "vessel_municipality",
+    "type": "STRING",
+    "description": "The vessel's home municipality retrieved from the mark register for fishing vessels. Appears only for active fishing vessels."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "vessel_country",
+    "type": "STRING",
+    "description": "The vessel's home county is taken from the mark register for fishing vessels. Appears only for active fishing vessels."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "length",
+    "type": "FLOAT64",
+    "description": "The vessel's largest length in meters, measured from the leading edge of the front part of the hull to the stern edge of the aft part of the hull, cf. Regulations of 18 December 2009 no. 1694 on the measurement of ships § 2 letter l. For inactive fishing vessels at the time of notification, the last registered information is displayed. For vessel types other than fishing vessels entered manually when registering fishing tracking."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "power_engine",
+    "type": "INT64",
+    "description": "Engine power stated in horsepower (HP). For fishing vessels taken from the brand register. For inactive fishing vessels at the time of notification, the last registered information is displayed. For vessel types other than fishing vessels entered manually when registering fishing tracking."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "gross_tonnage_1969",
+    "type": "STRING",
+    "description": "For fishing vessels taken from the trade mark register, originally from a survey letter from the Norwegian Maritime Authority. For inactive fishing vessels at the time of notification, the last registered information is displayed. For vessel types other than fishing vessels entered manually when registering fishing tracking."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "gross_tonnage_other",
+    "type": "INT64",
+    "description": "The vessel's gross tonnage measured according to rules other than the London Convention 1969. For fishing vessels taken from the Register of Marks. For inactive fishing vessels at the time of notification, the last registered information is displayed. For vessel types other than fishing vessels entered manually when registering fishing tracking."
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "vessel_type_code",
+    "type": "INT64"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "vessel_type",
+    "type": "STRING",
+    "description": "Fishing vessels are stated in two categories where active fishing vessels are stated as «Fishing vessels (active)» and inactive fishing vessels at the time of notification are stated as only «Fishing vessels». For other vessel types, it is entered manually when registering fishery tracking."
+  }
+]

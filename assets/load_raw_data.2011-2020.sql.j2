@@ -1,0 +1,77 @@
+#standardsql
+WITH
+
+###
+### Apply basic transformations to the temp Norway VMS positions.
+###
+raw_typed_norwegian as (
+  SELECT
+    CAST(message_id as INT64) as message_id,
+    message_type_code,
+    message_type,
+    PARSE_TIMESTAMP('%d.%m.%Y %H:%M:%S', replace(replace(timestamp_utc,',000000000', ''), '  ', ' ')) as timestamp_utc,
+    CAST(lat as FLOAT64) as lat,
+    CAST(lon as FLOAT64) as lon,
+    CAST(course as INT64) as course,
+    CAST(speed as FLOAT64) as speed,
+    callsign,
+    registration_mark,
+    vessel_name,
+    vessel_municipality,
+    vessel_country,
+    CAST(length as FLOAT64) as length,
+    CAST(power_engine as INT64) as power_engine,
+    gross_tonnage_1969, 
+    gross_tonnage_other,
+    vessel_type_code,
+    vessel_type as vessel_type,
+  FROM
+    `{{ source }}`
+  WHERE
+      SUBSTRING(timestamp_utc, 7, 4) = SUBSTRING('{{ start_date }}', 1, 4)
+),
+raw_typed_iso as (
+  # in case the timestamp is in ISO format
+  SELECT
+    CAST(message_id as INT64) as message_id,
+    message_type_code,
+    message_type,
+    PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S', replace(replace(timestamp_utc,',000000000', ''), '  ', ' ')) as timestamp_utc,
+    CAST(lat as FLOAT64) as lat,
+    CAST(lon as FLOAT64) as lon,
+    CAST(course as INT64) as course,
+    CAST(speed as FLOAT64) as speed,
+    callsign,
+    registration_mark,
+    vessel_name,
+    vessel_municipality,
+    vessel_country,
+    CAST(length as FLOAT64) as length,
+    CAST(power_engine as INT64) as power_engine,
+    gross_tonnage_1969, 
+    gross_tonnage_other,
+    vessel_type_code,
+    vessel_type as vessel_type,
+  FROM
+    `{{ source }}`
+  WHERE
+      SUBSTRING(timestamp_utc, 1, 4) = SUBSTRING('{{ start_date }}', 1, 4)
+),
+raw_typed as (
+  SELECT * 
+  FROM raw_typed_norwegian
+  UNION ALL 
+  SELECT * 
+  FROM raw_typed_iso
+)
+
+###
+### Final query with messages in the provided date range
+###
+SELECT
+  *
+FROM
+  raw_typed
+WHERE
+    timestamp_utc >= Timestamp('{{ start_date }}')
+    AND timestamp_utc < Timestamp('{{ end_date }}')

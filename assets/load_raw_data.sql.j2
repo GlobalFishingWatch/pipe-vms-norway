@@ -1,0 +1,37 @@
+#standardsql
+WITH
+
+###
+### Apply basic transformations to the temp Norway VMS positions.
+###
+raw_typed as (
+  SELECT
+    CAST(message_id as INT64) as message_id,
+    message_type_code,
+    message_type,
+    PARSE_TIMESTAMP('%d.%m.%Y %H.%M.%S', replace(timestamp_utc,',000000000', '')) as timestamp_utc,
+    CAST(replace(lat, ',', '.') as FLOAT64) as lat,
+    CAST(replace(lon, ',', '.') as FLOAT64) as lon,
+    CAST(course as INT64) as course,
+    CAST(replace(speed, ',', '.') as FLOAT64) as speed,
+    callsign,
+    registration_mark,
+    vessel_name,
+    CAST(replace(length, ',', '.') as DECIMAL) as length,
+    CAST(gross_tonnage as INT64) as gross_tonnage,
+    CAST(power_engine as INT64) as power_engine,
+    vessel_type as vessel_type,
+  FROM
+    `{{ source }}`
+)
+
+###
+### Final query with messages in the provided date range
+###
+SELECT
+  *
+FROM
+  raw_typed
+WHERE
+    timestamp_utc >= Timestamp('{{ start_date }}')
+    AND timestamp_utc < Timestamp('{{ end_date }}')
