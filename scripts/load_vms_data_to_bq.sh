@@ -36,125 +36,137 @@ for index in ${!ARGS[*]}; do
   declare "${ARGS[$index]}"="${ARG_VALUES[$index]}"
 done
 
-YEAR=${START_DT:0:4}
+START_YEAR=${START_DT:0:4}
+END_YEAR=${END_DT:0:4}
 
-################################################################################
-# Loads the VMS DATA into a temp table
-################################################################################
-echo
-echo "Loads the VMS DATA into a temp table"
-# By default use the latest temp raw schema valid since 2022
-SCHEMA=${ASSETS}/temp_raw_schema.json
-if [[ $(($YEAR)) -eq 2021 ]]; then
-  SCHEMA="${ASSETS}/temp_raw_schema.2021.json"
-elif [[ $(($YEAR)) -le 2020 ]]; then
-  SCHEMA="${ASSETS}/temp_raw_schema.2011-2020.json"
-fi
-# Get the most recent gzip file for the YEAR
-response=(`gsutil ls -l ${SOURCE}/${YEAR}* | sort -k 2 | tail -n 2 | head -1`)
-GCS_SOURCE=${response[2]}
+YEAR=$(($START_YEAR))
+while [[ "$YEAR" -le "$END_YEAR"  ]]; do 
 
-if [ "$?" -ne 0 ]; then
-  echo "  Could not find a position's report csv file for the given day on ${GCS_SOURCE}."
-  exit 1
-fi
+  ################################################################################
+  # Loads the VMS DATA into a temp table
+  ################################################################################
+  echo
+  echo "Loads the $YEAR VMS DATA into a temp table"
+  # By default use the latest temp raw schema valid since 2022
+  SCHEMA=${ASSETS}/temp_raw_schema.json
+  if [[ $(($YEAR)) -eq 2021 ]]; then
+    SCHEMA="${ASSETS}/temp_raw_schema.2021.json"
+  elif [[ $(($YEAR)) -eq 2022 ]]; then
+    SCHEMA="${ASSETS}/temp_raw_schema.2022.json"
+  elif [[ $(($YEAR)) -le 2020 ]]; then
+    SCHEMA="${ASSETS}/temp_raw_schema.2011-2020.json"
+  fi
+  # Get the most recent gzip file for the YEAR
+  response=(`gsutil ls -l ${SOURCE}/${YEAR}* | sort -k 2 | tail -n 2 | head -1`)
+  GCS_SOURCE=${response[2]}
 
-echo "CSV File ${GCS_SOURCE}"
-bq load \
-  --replace \
-  --source_format=CSV \
-  -F=";" \
-  --autodetect \
-  --schema=${SCHEMA} \
-  ${TEMP_TABLE} \
-  ${GCS_SOURCE}
-if [ "$?" -ne 0 ]; then
-  echo "  Unable to load the VMS DATA."
-  display_usage
-  exit 1
-fi
+  if [ "$?" -ne 0 ]; then
+    echo "  Could not find a position's report csv file for the given day on ${GCS_SOURCE}."
+    exit 1
+  fi
 
-
-################################################################################
-# Removes the partitions on VMS raw table before inserting the new positions
-################################################################################
-echo
-echo "Removing data on ${DEST} from ${START_DT} to ${END_DT}"
-jinja2 ${ASSETS}/delete_raw_data.sql.j2 \
-  -D dest=${DEST} \
-  -D start_date=${START_DT} \
-  -D end_date=${END_DT} \
-  | bq query -q \
-    --nouse_legacy_sql
+  echo "CSV File ${GCS_SOURCE}"
+  bq load \
+    --replace \
+    --source_format=CSV \
+    -F=";" \
+    --autodetect \
+    --schema=${SCHEMA} \
+    ${TEMP_TABLE} \
+    ${GCS_SOURCE}
+  if [ "$?" -ne 0 ]; then
+    echo "  Unable to load the VMS DATA."
+    display_usage
+    exit 1
+  fi
 
 
-################################################################################
-# Loads the VMS DATA into the raw table
-################################################################################
-# By default use the latest temp raw schema valid since 2022
-echo
-echo "Loads the VMS DATA into the RAW table"
-SQL=${ASSETS}/load_raw_data.sql.j2
-if [[ $(($YEAR)) -eq 2021 ]]; then
-  SQL=${ASSETS}/load_raw_data.2021.sql.j2
-elif [[ $(($YEAR)) -le 2020 ]]; then
-  SQL=${ASSETS}/load_raw_data.2011-2020.sql.j2
-fi
-SCHEMA=${ASSETS}/raw_schema.json
-if [[ $(($YEAR)) -le 2020 ]]; then
-  SCHEMA=${ASSETS}/raw_schema.2011-2020.json
-fi
-
-jinja2 ${SQL} \
-  -D source=${TEMP_TABLE} \
-  -D start_date=${START_DT} \
-  -D end_date=${END_DT} \
-  | bq query -q --max_rows=0 --allow_large_results \
-    --append_table \
-    --nouse_legacy_sql \
-    --destination_schema ${SCHEMA} \
-    --destination_table ${DEST}
-
-if [ "$?" -ne 0 ]; then
-  echo "  Unable to load the VMS DATA into the raw table ${DEST}"
-  display_usage
-  exit 1
-fi
-
-#############################################################
-# Updates the table description.
-#############################################################
-echo 
-echo "Updating table description ${DEST}"
-TABLE_DESC=(
-  "* Pipeline: ${PIPELINE} ${PIPELINE_VERSION}"
-  "* Source: VMS ${SOURCE}"
-  "* Command:"
-  "$(basename $0)"
-  "$@"
-)
-TABLE_DESC=$( IFS=$'\n'; echo "${TABLE_DESC[*]}" )
-
-echo "${TABLE_DESC}"
-bq update --description "${TABLE_DESC}" ${DEST}
-
-if [ "$?" -ne 0 ]; then
-  echo "  Unable to update the normalize table decription ${DEST}"
-  display_usage
-  exit 1
-fi
-
-#############################################################
-# Deletes the temp table description.
-#############################################################
-echo 
-echo "Deleting temp table ${TEMP_TABLE}"
-bq rm -f ${TEMP_TABLE}
-if [ "$?" -ne 0 ]; then
-  echo "  Unable to delete temp table ${TEMP_TABLE}"
-  display_usage
-  exit 1
-fi
+  ################################################################################
+  # Removes the partitions on VMS raw table before inserting the new positions
+  ################################################################################
+  echo
+  echo "Removing data on ${DEST} from ${START_DT} to ${END_DT}"
+  jinja2 ${ASSETS}/delete_raw_data.sql.j2 \
+    -D dest=${DEST} \
+    -D start_date=${START_DT} \
+    -D end_date=${END_DT} \
+    | bq query -q \
+      --nouse_legacy_sql
 
 
+  ################################################################################
+  # Loads the VMS DATA into the raw table
+  ################################################################################
+  # By default use the latest temp raw schema valid since 2022
+  echo
+  echo "Loads the VMS DATA into the RAW table"
+  SQL=${ASSETS}/load_raw_data.sql.j2
+  if [[ $(($YEAR)) -eq 2021 ]]; then
+    SQL=${ASSETS}/load_raw_data.2021.sql.j2
+  elif [[ $(($YEAR)) -eq 2022 ]]; then
+    SQL=${ASSETS}/load_raw_data.2022.sql.j2
+  elif [[ $(($YEAR)) -le 2020 ]]; then
+    SQL=${ASSETS}/load_raw_data.2011-2020.sql.j2
+  fi
+  SCHEMA=${ASSETS}/raw_schema.json
+  if [[ $(($YEAR)) -le 2020 ]]; then
+    SCHEMA=${ASSETS}/raw_schema.2011-2020.json
+  fi
+
+  jinja2 ${SQL} \
+    -D source=${TEMP_TABLE} \
+    -D start_date=${START_DT} \
+    -D end_date=${END_DT} \
+    | bq query -q --max_rows=0 --allow_large_results \
+      --append_table \
+      --nouse_legacy_sql \
+      --destination_schema ${SCHEMA} \
+      --destination_table ${DEST}
+
+  if [ "$?" -ne 0 ]; then
+    echo "  Unable to load the VMS DATA into the raw table ${DEST}"
+    display_usage
+    exit 1
+  fi
+
+  #############################################################
+  # Updates the table description.
+  #############################################################
+  echo 
+  echo "Updating table description ${DEST}"
+  TABLE_DESC=(
+    "* Pipeline: ${PIPELINE} ${PIPELINE_VERSION}"
+    "* Source: VMS ${SOURCE}"
+    "* Command:"
+    "$(basename $0)"
+    "$@"
+  )
+  TABLE_DESC=$( IFS=$'\n'; echo "${TABLE_DESC[*]}" )
+
+  echo "${TABLE_DESC}"
+  bq update --description "${TABLE_DESC}" ${DEST}
+
+  if [ "$?" -ne 0 ]; then
+    echo "  Unable to update the normalize table decription ${DEST}"
+    display_usage
+    exit 1
+  fi
+
+  #############################################################
+  # Deletes the temp table description.
+  #############################################################
+  echo 
+  echo "Deleting temp table ${TEMP_TABLE}"
+  bq rm -f ${TEMP_TABLE}
+  if [ "$?" -ne 0 ]; then
+    echo "  Unable to delete temp table ${TEMP_TABLE}"
+    display_usage
+    exit 1
+  fi
+
+
+  echo "============================================"
+  echo 
+  YEAR=$(($YEAR + 1 ))
+done
 echo "${DEST} Done."
