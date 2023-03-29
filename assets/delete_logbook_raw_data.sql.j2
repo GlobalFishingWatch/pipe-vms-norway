@@ -1,0 +1,7 @@
+#standardsql
+DELETE
+FROM
+  `{{ dest }}`
+WHERE
+    message_timestamp >= Timestamp('{{ start_date }}')
+    AND message_timestamp < Timestamp('{{ end_date }}')

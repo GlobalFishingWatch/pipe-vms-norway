@@ -1,0 +1,686 @@
+[
+  {
+    "mode": "NULLABLE",
+    "name": "relevant_year",
+    "type": "STRING",
+    "description": "year of reference [Relevant.år]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "message_year",
+    "type": "STRING",
+    "description": "message year [Meldingsår]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "message_type_code",
+    "type": "STRING",
+    "description": "type of message code [Meldingstype..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "message_type",
+    "type": "STRING",
+    "description": "type of message [Meldingstype]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "message_number",
+    "type": "STRING",
+    "description": "message number [Meldingsnummer]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "message_version",
+    "type": "STRING",
+    "description": "message version [Meldingsversjon]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "sequence_number",
+    "type": "STRING",
+    "description": "sequence number [Sekvensnummer]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "message_id",
+    "type": "STRING",
+    "description": "message ID [Melding.ID]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "message_timestamp",
+    "type": "STRING",
+    "description": "message timestamp [Meldingstidspunkt]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "message_date",
+    "type": "STRING",
+    "description": "message date [Meldingsdato]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "message_hour",
+    "type": "STRING",
+    "description": "message hour [Meldingsklokkeslett]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "callsign_ers",
+    "type": "STRING",
+    "description": "callsign [Radiokallesignal..ERS.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "shipname_ers",
+    "type": "STRING",
+    "description": "shipname [Fartøynavn..ERS.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "registry_ers",
+    "type": "STRING",
+    "description": "norway vessel registry [Registreringsmerke..ERS.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "vessel_flag",
+    "type": "STRING",
+    "description": "vessel flag code [Fartøynasjonalitet..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "vessel_flag_group_code",
+    "type": "STRING",
+    "description": "vessel flag group code [Fartøygruppe..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "vessel_flag_group",
+    "type": "STRING",
+    "description": "vessel flag group [Fartøygruppe]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "quota_type_code",
+    "type": "STRING",
+    "description": "type of quote code [Kvotetype..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "quota_type",
+    "type": "STRING",
+    "description": "type of quote [Kvotetype]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "activity_code",
+    "type": "STRING",
+    "description": "vessel activity code [Aktivitet..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "activity",
+    "type": "STRING",
+    "description": "vessel activity [Aktivitet]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "port_code",
+    "type": "STRING",
+    "description": "port code [Havn..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "port_name",
+    "type": "STRING",
+    "description": "port name [Havn]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "port_nacionality",
+    "type": "STRING",
+    "description": "port nacionality [Havn.nasjonalitet]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "timestamp_start_activity",
+    "type": "STRING",
+    "description": "timestamp start activity [Starttidspunkt]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "date_start_activity",
+    "type": "STRING",
+    "description": "data start activity [Startdato]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "hour_start_activity",
+    "type": "STRING",
+    "description": "hour start activity [Startklokkeslett]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "lat_start_activity",
+    "type": "STRING",
+    "description": "latitude start activity [Startposisjon.bredde]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "lon_start_activity",
+    "type": "STRING",
+    "description": "longitud start activity [Startposisjon.lengde]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "main_area_start_activity_code",
+    "type": "STRING",
+    "description": "main area start code [Hovedområde.start..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "main_area_start_activity_name",
+    "type": "STRING",
+    "description": "main area start name [Hovedområde.start]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "location_start_activity_code",
+    "type": "STRING",
+    "description": "location start code [Lokasjon.start..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "zone_code",
+    "type": "STRING",
+    "description": "zone code [Sone..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "zone_name",
+    "type": "STRING",
+    "description": "zone name [Sone]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "area_grouping_start_activity_code",
+    "type": "STRING",
+    "description": "area grouping start code [Områdegruppering.start..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "area_grouping_start_activity_name",
+    "type": "STRING",
+    "description": "area grouping start name [Områdegruppering.start]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "depth_start_activity",
+    "type": "STRING",
+    "description": "depth start [Havdybde.start]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "timestamp_stop_activity",
+    "type": "STRING",
+    "description": "timestamp stop activity [Stopptidspunkt]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "date_stop_activity",
+    "type": "STRING",
+    "description": "date stpo activity [Stoppdato]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "hour_stop_activity",
+    "type": "STRING",
+    "description": "hour stop activity [Stoppklokkeslett]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "duration_activity",
+    "type": "STRING",
+    "description": "duration minutes [Varighet]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "year_reference",
+    "type": "STRING",
+    "description": "year of reference [Fangstår]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "lat_stop_activity",
+    "type": "STRING",
+    "description": "latitude stop activity [Stopposisjon.bredde]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "lon_stop_activity",
+    "type": "STRING",
+    "description": "longitud stop activity [Stopposisjon.lengde]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "main_area_stop_activity_code",
+    "type": "STRING",
+    "description": "main area stop code [Hovedområde.stopp..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "main_area_stop_activity_name",
+    "type": "STRING",
+    "description": "mais area stop name [Hovedområde.stopp]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "location_stop_activity_code",
+    "type": "STRING",
+    "description": "location stop code [Lokasjon.stopp..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "area_grouping_stop_activity_code",
+    "type": "STRING",
+    "description": "area grouping stop code [Områdegruppering.stopp..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "area_grouping_stop_activity_name",
+    "type": "STRING",
+    "description": "area grouping stop name [Områdegruppering.stopp]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "depth_stop_activity",
+    "type": "STRING",
+    "description": "depth stop [Havdybde.stopp]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "distance_activity",
+    "type": "STRING",
+    "description": "distance of set, meters [Trekkavstand]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "pumped_vessel",
+    "type": "STRING",
+    "description": "pumped vessel [Pumpet.fra.fartøy]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fao_gear_code",
+    "type": "STRING",
+    "description": "FAO fishing gear [Redskap.FAO..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fao_gear_name",
+    "type": "STRING",
+    "description": "FAO fishing gear name [Redskap.FAO]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fdir_gear_code",
+    "type": "STRING",
+    "description": "Norway gear code [Redskap.FDIR..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fdir_gear_name",
+    "type": "STRING",
+    "description": "Norway gear name [Redskap.FDIR]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fidr_gear_group_code",
+    "type": "STRING",
+    "description": "Norway gear group code [Redskap...gruppe..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fdir_gear_group_name",
+    "type": "STRING",
+    "description": "Norway gear group name [Redskap...gruppe]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fdir_main_gear_code",
+    "type": "STRING",
+    "description": "Norway main gear code [Redskap...hovedgruppe..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fdir_main_gear_name",
+    "type": "STRING",
+    "description": "Norway main gear name [Redskap...hovedgruppe]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fdir_gear_specification_code",
+    "type": "STRING",
+    "description": "Norway gear specification code [Redskapsspesifikasjon..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fdir_gear_specification_name",
+    "type": "STRING",
+    "description": "Norway gear specification name [Redskapsspesifikasjon]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "mesh_size",
+    "type": "STRING",
+    "description": "gear mesh size mm [Redskap.maskevidde]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "gear_problem_code",
+    "type": "STRING",
+    "description": "gear problem code [Redskap.problem..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "gear_problem_name",
+    "type": "STRING",
+    "description": "gear problem name [Redskap.problem]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "gear_quantity",
+    "type": "STRING",
+    "description": "gear quantity [Redskap.mengde]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fao_main_species_code",
+    "type": "STRING",
+    "description": "fao main species code [Hovedart.FAO..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fao_main_species_name",
+    "type": "STRING",
+    "description": "fao main species name [Hovedart.FAO]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fdir_main_species_code",
+    "type": "STRING",
+    "description": "fdir main species code [Hovedart...FDIR..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fao_species_code",
+    "type": "STRING",
+    "description": "fao species code [Art.FAO..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fao_species_name",
+    "type": "STRING",
+    "description": "fao species name [Art.FAO]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fdir_species_code",
+    "type": "STRING",
+    "description": "fdir species code [Art...FDIR..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fdir_species_name",
+    "type": "STRING",
+    "description": "fdir species name [Art...FDIR]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "species_group_code",
+    "type": "STRING",
+    "description": "species group code [Art...gruppe..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "species_group_name",
+    "type": "STRING",
+    "description": "species group name [Art...gruppe]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "species_main_group_code",
+    "type": "STRING",
+    "description": "species main group code [Art...hovedgruppe..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "species_main_group",
+    "type": "STRING",
+    "description": "species main group [Art...hovedgruppe]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "herring_stock_code",
+    "type": "STRING",
+    "description": "herring stock code [Sildebestand..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "herring_stock",
+    "type": "STRING",
+    "description": "herring stock [Sildebestand]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "fdir_herring_stock_code",
+    "type": "STRING",
+    "description": "fdir herring stock code [Sildebestand...FDIR..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "weigth_kg",
+    "type": "STRING",
+    "description": "catch weigth kg [Rundvekt]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "individual_number",
+    "type": "STRING",
+    "description": "catch individual number [Individnummer]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "species_sex_code",
+    "type": "STRING",
+    "description": "species sex code [Kjønn..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "species_sex",
+    "type": "STRING",
+    "description": "species sex [Kjønn]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "species_length",
+    "type": "STRING",
+    "description": "species length [Lengde]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "species_circumference",
+    "type": "STRING",
+    "description": "species circumference [Omkrets]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "species_bacon_a",
+    "type": "STRING",
+    "description": "species bacon a [Spekkmål.A]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "species_bacon_b",
+    "type": "STRING",
+    "description": "species bacon b [Spekkmål.B]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "species_bacon_c",
+    "type": "STRING",
+    "description": "species bacon c [Spekkmål.C]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "species_fetal_length",
+    "type": "STRING",
+    "description": "species fetal length [Fosterlengde]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "species_grenade_number",
+    "type": "STRING",
+    "description": "species grenade number [Granatnummer]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "vessel_id",
+    "type": "STRING",
+    "description": "vessel ID - unique number [Fartøy.ID]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "registry",
+    "type": "STRING",
+    "description": "Norwegian registry code [Registreringsmerke]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "callsign",
+    "type": "STRING",
+    "description": "call sign [Radiokallesignal]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "shipname",
+    "type": "STRING",
+    "description": "shipname [Fartøynavn]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "vessel_municipality_code",
+    "type": "STRING",
+    "description": "vessel city code [Fartøykommune..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "vessel_municipality",
+    "type": "STRING",
+    "description": "vessel city [Fartøykommune]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "vessel_county_code",
+    "type": "STRING",
+    "description": "vessel county code [Fartøyfylke..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "vessel_county",
+    "type": "STRING",
+    "description": "vessel county [Fartøyfylke]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "length_max",
+    "type": "STRING",
+    "description": "length [Største.lengde]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "length_group_code",
+    "type": "STRING",
+    "description": "length group code [Lengdegruppe..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "length_group",
+    "type": "STRING",
+    "description": "length group [Lengdegruppe]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "gross_tonnage_1969",
+    "type": "STRING",
+    "description": "GT - 1969 [Bruttotonnasje.1969]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "gross_tonnage",
+    "type": "STRING",
+    "description": "GT [Bruttotonnasje.annen]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "year_construction",
+    "type": "STRING",
+    "description": "year of construction [Byggeår]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "year_renovation",
+    "type": "STRING",
+    "description": "renovation year [Ombyggingsår]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "engine_power",
+    "type": "STRING",
+    "description": "engine power - hp [Motorkraft]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "engine_year",
+    "type": "STRING",
+    "description": "engine year [Motorbyggeår]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "hull_material",
+    "type": "STRING",
+    "description": "hull material [Fartøymateriale..kode.]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "width",
+    "type": "STRING",
+    "description": "width [Bredde]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "authorization_start",
+    "type": "STRING",
+    "description": "start authorization [Fartøy.gjelder.fra.dato]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "authorization_end",
+    "type": "STRING",
+    "description": "end authorization [Fartøy.gjelder.til.dato]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "vessel_identification",
+    "type": "STRING",
+    "description": "vessel indetification - concatenation of shipname;callsign;norway registry [Fartøyidentifikasjon]"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "length",
+    "type": "STRING",
+    "description": "length [Fartøylengde]"
+  }
+]

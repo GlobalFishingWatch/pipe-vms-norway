@@ -31,6 +31,10 @@ case $1 in
     ${THIS_SCRIPT_DIR}/load_vms_data_to_bq.sh "${@:2}"
     ;;
 
+  load_vms_logbook_to_bq)
+    ${THIS_SCRIPT_DIR}/load_vms_logbook_to_bq.sh "${@:2}"
+    ;;
+
   fetch_vms_logbook)
     ${THIS_SCRIPT_DIR}/fetch_vms_logbook.sh "${@:2}"
     ;;
