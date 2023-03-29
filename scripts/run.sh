@@ -5,9 +5,10 @@ THIS_SCRIPT_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"
 display_usage() {
   echo "Available Commands"
   echo "  fetch_vms_data         Download NORWAY VMS data to GCS"
-  echo "  fetch_vms_logbook      Download NORWAY VMS logbook to GCS"
   echo "  load_vms_data_to_bq    Load NORWAY VMS data into BQ"
   echo "  fetch_normalized_vms   Copy and normalize vms data."
+  echo "  fetch_logbook      Download NORWAY dca logbook to GCS"
+  echo "  load_logbook_to_bq    Load NORWAY dca logbook into BQ"
 }
 
 
@@ -31,12 +32,12 @@ case $1 in
     ${THIS_SCRIPT_DIR}/load_vms_data_to_bq.sh "${@:2}"
     ;;
 
-  load_vms_logbook_to_bq)
-    ${THIS_SCRIPT_DIR}/load_vms_logbook_to_bq.sh "${@:2}"
+  fetch_logbook)
+    ${THIS_SCRIPT_DIR}/fetch_logbook.sh "${@:2}"
     ;;
 
-  fetch_vms_logbook)
-    ${THIS_SCRIPT_DIR}/fetch_vms_logbook.sh "${@:2}"
+  load_logbook_to_bq)
+    ${THIS_SCRIPT_DIR}/load_logbook_to_bq.sh "${@:2}"
     ;;
 
   *)
