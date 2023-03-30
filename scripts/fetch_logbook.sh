@@ -99,7 +99,7 @@ get_file_url () {
 ################################################################################
 # Downloads the NORWAY current year logbook.
 ################################################################################
-fetch_vms_logbook () {
+fetch_logbook () {
   URLS=`echo $1 | tr ' ' '\n'`
   YEAR=$2
   for ZIPURL in $URLS
@@ -186,7 +186,7 @@ while [[ "$YEAR" -le "$END_YEAR" && $exit_code -eq 0 ]]; do
     echo "$fileurl" | tr ' ' '\n';
     echo ;
     echo "Downloads the NORWAY logbook for year ${YEAR}.";
-    zipfile=`fetch_vms_logbook "$fileurl" "${YEAR}"`;
+    zipfile=`fetch_logbook "$fileurl" "${YEAR}"`;
     exit_code=$(($exit_code + $? ));
     set -e
   fi

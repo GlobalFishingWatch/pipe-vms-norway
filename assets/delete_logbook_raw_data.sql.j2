@@ -1,0 +1,10 @@
+#standardsql
+DELETE
+FROM
+  `{{ dest }}`
+WHERE
+    message_timestamp_month 
+      BETWEEN DATE_TRUNC(DATE('{{ start_date }}'), MONTH)
+      AND DATE_TRUNC(DATE('{{ end_date }}'), MONTH)
+    AND message_timestamp >= Timestamp('{{ start_date }}')
+    AND message_timestamp < Timestamp('{{ end_date }}')
