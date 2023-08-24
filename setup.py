@@ -22,6 +22,7 @@ setup(
     license="Apache 2.0",
     long_description=readme,
     name=PACKAGE_NAME,
+    py_modules=[],
     url=package.__source__,
     version=package.__version__,
     zip_safe=True
