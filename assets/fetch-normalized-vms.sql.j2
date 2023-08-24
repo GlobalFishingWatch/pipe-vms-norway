@@ -42,3 +42,7 @@ FROM
   raw_vms_positions_normalized
 WHERE
   ssvid IS NOT NULL
+  AND (
+    lat IS NOT NULL 
+    OR lon IS NOT NULL
+    )
