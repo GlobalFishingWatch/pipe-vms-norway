@@ -61,6 +61,7 @@ while [[ "$YEAR" -le "$END_YEAR"  ]]; do
   echo "CSV File ${GCS_SOURCE}"
   bq load \
     --replace \
+    --skip_leading_rows=1 \
     --source_format=CSV \
     -F=";" \
     --autodetect \
