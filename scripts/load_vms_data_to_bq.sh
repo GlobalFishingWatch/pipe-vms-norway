@@ -105,6 +105,9 @@ while [[ "$YEAR" -le "$END_YEAR"  ]]; do
     SQL=${ASSETS}/load_raw_data.2021.sql.j2
   elif [[ $(($YEAR)) -eq 2022 ]]; then
     SQL=${ASSETS}/load_raw_data.2022.sql.j2
+  elif [[ $(($YEAR)) -eq 2023 ]]; then
+    # Historic 2023 data has the same format that year 2021 🤷‍♂️
+    SQL=${ASSETS}/load_raw_data.2021.sql.j2
   elif [[ $(($YEAR)) -le 2020 ]]; then
     SQL=${ASSETS}/load_raw_data.2011-2020.sql.j2
   fi
