@@ -133,5 +133,6 @@ SELECT
 FROM
   raw_typed
 WHERE
-    message_timestamp >= Timestamp('{{ start_date }}')
-    AND message_timestamp < Timestamp('{{ end_date }}')
+    date(message_timestamp) 
+      BETWEEN date('{{ start_date }}') 
+      AND date('{{ end_date }}')

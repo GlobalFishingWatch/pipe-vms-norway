@@ -6,5 +6,6 @@ WHERE
     message_timestamp_month 
       BETWEEN DATE_TRUNC(DATE('{{ start_date }}'), MONTH)
       AND DATE_TRUNC(DATE('{{ end_date }}'), MONTH)
-    AND message_timestamp >= Timestamp('{{ start_date }}')
-    AND message_timestamp < Timestamp('{{ end_date }}')
+    AND date(message_timestamp) 
+      BETWEEN date('{{ start_date }}') 
+      AND date('{{ end_date }}')
