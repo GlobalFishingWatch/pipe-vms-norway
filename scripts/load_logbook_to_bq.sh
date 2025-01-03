@@ -58,6 +58,11 @@ while [[ "$YEAR" -le "$END_YEAR"  ]]; do
     exit 1
   fi
 
+  if [ -z "$GCS_SOURCE" ]; then
+    echo "  Could not find a logbook's report csv file for the given day on ${SOURCE}."
+    exit 1
+  fi
+
   echo "CSV File ${GCS_SOURCE}"
   bq load \
     --replace \
