@@ -13,7 +13,7 @@ raw_vms_positions_normalized AS (
     lon,
     speed,
     CAST(course as FLOAT64) as course,
-    concat(`world-fishing-827.udfs_v20210701.normalize_shipname`(vessel_name), if(`world-fishing-827.udfs_v20210701.normalize_callsign`(callsign) is null, '', concat('-', `world-fishing-827.udfs_v20210701.normalize_callsign`(callsign)))) as ssvid,
+    concat(`global-fishing-watch.udfs_v20210701.normalize_shipname`(vessel_name), if(`global-fishing-watch.udfs_v20210701.normalize_callsign`(callsign) is null, '', concat('-', `global-fishing-watch.udfs_v20210701.normalize_callsign`(callsign)))) as ssvid,
     IF(callsign != "", callsign, NULL) callsign,
     CASE UPPER(vessel_type)
       WHEN 'FISKEFARTØY' THEN 'fishing'
