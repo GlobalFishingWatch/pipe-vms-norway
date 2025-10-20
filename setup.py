@@ -4,7 +4,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 setup(
-    version='v3.3.3',
+    version='v3.3.8',
     author='engineering@globalfishingwatch.org',
     packages=find_packages(exclude=['test*.*', 'tests'])
 )
