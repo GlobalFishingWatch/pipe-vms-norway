@@ -109,6 +109,7 @@ ENV/
 config.sh
 output/
 tmp/
+.terraform*
 
 # OSX files
 .DS_Store
