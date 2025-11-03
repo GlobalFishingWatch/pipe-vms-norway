@@ -1,4 +1,3 @@
-version: '2'
 services:
   pipe_vms_norway:
     image: "gfw/pipe-vms-norway"
