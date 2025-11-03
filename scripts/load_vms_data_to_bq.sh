@@ -42,6 +42,26 @@ END_YEAR=${END_DT:0:4}
 YEAR=$(($START_YEAR))
 while [[ "$YEAR" -le "$END_YEAR"  ]]; do 
 
+
+################################################################################
+# Validation of parameters
+################################################################################
+BQ_PATTERN="^[a-zA-Z0-9_\-]+[\.:][a-zA-Z0-9_\-]+\.[a-zA-Z0-9_\-]+$"
+if [[ "${DEST}" =~ ${BQ_PATTERN} ]]; then
+  # if colon punctuation is not present replace only the first dot with colon punctuation.
+  DEST_COLON=$(if [[ ${DEST} != *":"*  ]]; then echo ${DEST/./:}; else echo ${DEST}; fi)
+else
+  echo "Error passing the DEST it should match the following pattern (${BQ_PATTERN})."
+  exit 1
+fi
+if [[ "${TEMP_TABLE}" =~ ${BQ_PATTERN} ]]; then
+  # if colon punctuation is not present replace only the first dot with colon punctuation.
+  TEMP_TABLE_COLON=$(if [[ ${TEMP_TABLE} != *":"*  ]]; then echo ${TEMP_TABLE/./:}; else echo ${TEMP_TABLE}; fi)
+else
+  echo "Error passing the TEMP_TABLE it should match the following pattern (${BQ_PATTERN})."
+  exit 1
+fi
+
   ################################################################################
   # Loads the VMS DATA into a temp table
   ################################################################################
@@ -72,7 +92,7 @@ while [[ "$YEAR" -le "$END_YEAR"  ]]; do
     -F=";" \
     --autodetect \
     --schema=${SCHEMA} \
-    ${TEMP_TABLE} \
+    ${TEMP_TABLE_COLON} \
     ${GCS_SOURCE}
   if [ "$?" -ne 0 ]; then
     echo "  Unable to load the VMS DATA."
@@ -85,7 +105,7 @@ while [[ "$YEAR" -le "$END_YEAR"  ]]; do
   # Removes the partitions on VMS raw table before inserting the new positions
   ################################################################################
   echo
-  echo "Removing data on ${DEST} from ${START_DT} to ${END_DT}"
+  echo "Removing data on ${DEST_COLON} from ${START_DT} to ${END_DT}"
   jinja2 ${ASSETS}/delete_raw_data.sql.j2 \
     -D dest=${DEST} \
     -D start_date=${START_DT} \
@@ -124,10 +144,10 @@ while [[ "$YEAR" -le "$END_YEAR"  ]]; do
       --append_table \
       --nouse_legacy_sql \
       --destination_schema ${SCHEMA} \
-      --destination_table ${DEST}
+      --destination_table ${DEST_COLON}
 
   if [ "$?" -ne 0 ]; then
-    echo "  Unable to load the VMS DATA into the raw table ${DEST}"
+    echo "  Unable to load the VMS DATA into the raw table ${DEST_COLON}"
     display_usage
     exit 1
   fi
@@ -136,7 +156,7 @@ while [[ "$YEAR" -le "$END_YEAR"  ]]; do
   # Updates the table description.
   #############################################################
   echo 
-  echo "Updating table description ${DEST}"
+  echo "Updating table description ${DEST_COLON}"
   TABLE_DESC=(
     "* Pipeline: ${PIPELINE} ${PIPELINE_VERSION}"
     "* Source: VMS ${SOURCE}"
@@ -147,10 +167,10 @@ while [[ "$YEAR" -le "$END_YEAR"  ]]; do
   TABLE_DESC=$( IFS=$'\n'; echo "${TABLE_DESC[*]}" )
 
   echo "${TABLE_DESC}"
-  bq update --description "${TABLE_DESC}" ${DEST}
+  bq update --description "${TABLE_DESC}" ${DEST_COLON}
 
   if [ "$?" -ne 0 ]; then
-    echo "  Unable to update the normalize table decription ${DEST}"
+    echo "  Unable to update the normalize table decription ${DEST_COLON}"
     display_usage
     exit 1
   fi
@@ -159,10 +179,10 @@ while [[ "$YEAR" -le "$END_YEAR"  ]]; do
   # Deletes the temp table description.
   #############################################################
   echo 
-  echo "Deleting temp table ${TEMP_TABLE}"
-  bq rm -f ${TEMP_TABLE}
+  echo "Deleting temp table ${TEMP_TABLE_COLON}"
+  bq rm -f ${TEMP_TABLE_COLON}
   if [ "$?" -ne 0 ]; then
-    echo "  Unable to delete temp table ${TEMP_TABLE}"
+    echo "  Unable to delete temp table ${TEMP_TABLE_COLON}"
     display_usage
     exit 1
   fi
@@ -172,4 +192,4 @@ while [[ "$YEAR" -le "$END_YEAR"  ]]; do
   echo 
   YEAR=$(($YEAR + 1 ))
 done
-echo "${DEST} Done."
+echo "${DEST_COLON} Done."
