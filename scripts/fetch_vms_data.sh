@@ -84,10 +84,19 @@ get_file_url () {
           # URL exists
           break
         else
+          MISSING_URLS="${MISSING_URLS}\n${ZIPURL}"
           ZIPURL=""
         fi
         CHECKYEAR=$(($CHECKYEAR - 1))
       done
+      # if ZIPURL is still empty here it means we could not find any valid file
+      # then we return an error
+      if [ -z "$ZIPURL" ]; then
+        echo "Could not find the positions report csv file to download for year ${YEAR}. Tried these URLs:"
+        echo -e "${MISSING_URLS}"
+        return 1
+      fi
+
     else
       # Between 2011 and 2021 we should use this predefined list
       ZIPLIST="2021|https://www.fiskeridir.no/Tall-og-analyse/AApne-data/posisjonsrapportering-vms/_/attachment/download/d8736f20-309c-4b29-9786-a8d8271418c4:300bd8f940c7856c2fbeb4b2053d4fcd989f43e2/posisjonsrapportering-vms-2021-pos.zip
