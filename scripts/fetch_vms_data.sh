@@ -77,7 +77,7 @@ get_file_url () {
       # using the url of the previous years iteeratively until it finds
       # one that exists as sometimes the files are not published right away
       CHECKYEAR=$YEAR
-      while [ $CHECKYEAR -ge 2021 ]; do
+      while [ $CHECKYEAR -ge 2022 ]; do
         ZIPURL="https://register.fiskeridir.no/vms-ers/${CHECKYEAR}-VMS.csv.zip"
         HTTP_STATUS=$(curl -o /dev/null --silent --head --write-out '%{http_code}\n' "${ZIPURL}")
         if [ $HTTP_STATUS -eq 200 ]; then
