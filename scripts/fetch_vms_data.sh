@@ -72,7 +72,22 @@ get_file_url () {
     if [[ $(($YEAR)) -ge 2022 ]]; then
       # Starting in 2022 the files will (hopefully) be published in 
       # https://register.fiskeridir.no/vms-ers/${YEAR}-VMS.csv.zip
-      ZIPURL="https://register.fiskeridir.no/vms-ers/${YEAR}-VMS.csv.zip"
+
+      # Check that the url exists using curl, if it does not exist try
+      # using the url of the previous years iteeratively until it finds
+      # one that exists as sometimes the files are not published right away
+      CHECKYEAR=$YEAR
+      while [ $CHECKYEAR -ge 2021 ]; do
+        ZIPURL="https://register.fiskeridir.no/vms-ers/${CHECKYEAR}-VMS.csv.zip"
+        HTTP_STATUS=$(curl -o /dev/null --silent --head --write-out '%{http_code}\n' "${ZIPURL}")
+        if [ $HTTP_STATUS -eq 200 ]; then
+          # URL exists
+          break
+        else
+          ZIPURL=""
+        fi
+        CHECKYEAR=$(($CHECKYEAR - 1))
+      done
     else
       # Between 2011 and 2021 we should use this predefined list
       ZIPLIST="2021|https://www.fiskeridir.no/Tall-og-analyse/AApne-data/posisjonsrapportering-vms/_/attachment/download/d8736f20-309c-4b29-9786-a8d8271418c4:300bd8f940c7856c2fbeb4b2053d4fcd989f43e2/posisjonsrapportering-vms-2021-pos.zip
